@@ -1,0 +1,22 @@
+
+######### Protocolo para utilizar rejilla ntv2 en PostgreSQL con PostGIS
+
+######### Paso 1 ######### Descargar el fichero de la rejilla *.gsb
+España
+IGN = http://www.ign.es/web/resources/docs/IGNCnig/GDS-TOOLS-PENR2009.zip
+Catalunya:
+ICGC = http://www.icgc.cat/content/download/48766/337962/version/1/file/Malla_NTv2_11_03.zip
+
+######### Paso 2 ######### ubicar en la carpeta de PostgreSQL que utiliza proj4
+    SO Windows: C:\Program Files (x86)\PostgreSQL\9.6\gdal-data
+
+    SO Linux: /usr/share/proj
+    por consola: cp 100800401.gsb /usr/share/proj/
+
+######### Paso 3 ######### ejecutar sentencia sql en la consola de pgadmin
+update spatial_ref_sys set proj4text = '+proj=utm +zone=31 +ellps=intl +units=m +no_defs +nadgrids=100800401.gsb' where srid = 23031;
+
+######### Paso 4 ######### ejecutar sentencia sql para comprobar que está funcionando bien
+SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(428539 4577437)',23031),25831)) As wgs_geom;
+
+######### Paso 5 ######### Confirmar que devuelve los siguientes valores --> 428444.847 4577232.660 
